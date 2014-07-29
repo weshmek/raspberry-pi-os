@@ -2,6 +2,7 @@
 #include <blink.h>
 #include <fib.h>
 #include <bwio.h>
+#include <kernel.h>
 int kmain()
 {
 	activate_gpio();

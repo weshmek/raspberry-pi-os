@@ -4,7 +4,10 @@
 .globl _start
 .globl loop$
 _start:
-mov sp,#0x8000 @Stack starts at code
+@ldr sp, .L0
+mov sp,#0x80000 @Stack starts here. Where the hell is the best place to put it? 
 bl kmain
 loop$:
 b loop$
+.L0:
+	.word 0xEFFFFFFF

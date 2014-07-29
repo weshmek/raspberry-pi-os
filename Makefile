@@ -1,12 +1,13 @@
 XCC = arm-none-eabi-gcc
+XPP = arm-none-eabi-g++
 AS	= arm-none-eabi-as
 
-CFLAGS = -S -c -I include -pie -O0 
-LDFLAGS = -Llib -L/cygdrive/c/yagarto/lib/gcc/arm-none-eabi/4.7.2/ 
+CFLAGS = -S -c -I include -pie -O0  -Werror
+LDFLAGS = -Llib -L/cygdrive/c/yagarto/lib/gcc/arm-none-eabi/4.7.2/  -d
 all : kernel.img 
 
-kernel.img : build/fib.o build/main.o build/kmain.o build/blink.o build/Heap.o build/bwio.o  build/gcd.o build/doubles.o build/kernel.o
-	arm-none-eabi-ld -nostdlibs -L"C:\yagarto\lib\gcc\arm-none-eabi\4.7.2" -o build/output.elf -init _start -N -T kernel.ld -Map=kernel.map --no-undefined build/fib.o build/main.o build/kmain.o build/blink.o build/bwio.o build/gcd.o build/doubles.o build/kernel.o  -lgcc
+kernel.img : build/fib.o build/main.o build/kmain.o build/blink.o build/Heap.o build/bwio.o  build/gcd.o build/doubles.o build/kernel.o build/scheduler.o build/task.o 
+	arm-none-eabi-ld -d -nostdlibs -L"C:\yagarto\lib\gcc\arm-none-eabi\4.7.2" -o build/output.elf -init _start -N -T kernel.ld -Map=kernel.map --no-undefined build/fib.o build/main.o build/kmain.o build/blink.o build/bwio.o build/gcd.o build/doubles.o build/kernel.o build/scheduler.o build/task.o  -lgcc
 	arm-none-eabi-objdump -d build/output.elf > kernel.out
 		 
 	arm-none-eabi-objcopy build/output.elf -O binary kernel.img
@@ -35,6 +36,15 @@ asm/bwio.s : source/bwio.c
 
 asm/kernel.s : source/kernel.c
 	${XCC} ${CFLAGS} -o $@ source/kernel.c
+
+asm/cpptest.s : source/cpptest.cpp
+	${XPP} ${CFLAGS} -o $@ source/cpptest.cpp
+
+asm/scheduler.s : source/scheduler.c
+	${XCC} ${CFLAGS} -o $@ source/scheduler.c
+
+asm/task.s : source/task.c
+	${XCC} ${CFLAGS} -o $@ source/task.c
 	
 build/kmain.o : asm/kmain.s
 	${AS} asm/kmain.s -o $@
@@ -60,6 +70,15 @@ build/doubles.o : asm/doubles.s
 
 build/kernel.o : asm/kernel.s
 	${AS} -o $@ asm/kernel.s
+
+build/cpptest.o : asm/cpptest.s
+	${AS} -o $@ asm/cpptest.s
+
+build/scheduler.o : asm/scheduler.s
+	${AS} -o $@ asm/scheduler.s
+
+build/task.o : asm/task.s
+	${AS} -o $@ asm/task.s
 
 
 clean : 
