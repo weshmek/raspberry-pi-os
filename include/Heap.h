@@ -1,7 +1,9 @@
 #ifndef __HEAP_H__
 #define __HEAP_H__
 
-typedef struct {double* A; unsigned long length;} Heap;
+typedef double heap_elem;
+typedef unsigned long long heap_len;
 
-void Heapsort(double*, unsigned long);	
+
+void Heapsort(heap_elem*, heap_len);	
 #endif

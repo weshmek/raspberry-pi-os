@@ -6,9 +6,9 @@ CFLAGS = -S -c -I include -pie -O0  -Werror
 LDFLAGS = -Llib -L/cygdrive/c/yagarto/lib/gcc/arm-none-eabi/4.7.2/  -d
 all : kernel.img 
 
-kernel.img : build/fib.o build/main.o build/kmain.o build/blink.o build/Heap.o build/bwio.o  build/gcd.o build/doubles.o build/kernel.o build/scheduler.o build/task.o 
-	arm-none-eabi-ld -d -nostdlibs -L"C:\yagarto\lib\gcc\arm-none-eabi\4.7.2" -o build/output.elf -init _start -N -T kernel.ld -Map=kernel.map --no-undefined build/fib.o build/main.o build/kmain.o build/blink.o build/bwio.o build/gcd.o build/doubles.o build/kernel.o build/scheduler.o build/task.o  -lgcc
-	arm-none-eabi-objdump -d build/output.elf > kernel.out
+kernel.img : build/fib.o build/main.o build/kmain.o build/blink.o build/Heap.o build/bwio.o  build/gcd.o build/doubles.o build/kernel.o build/scheduler.o build/task.o build/framebuffer_info.o
+	arm-none-eabi-ld  -nostdlibs -L"C:\yagarto\lib\gcc\arm-none-eabi\4.7.2" -o build/output.elf -init _start -N -T kernel.ld -Map=kernel.map --no-undefined build/fib.o build/main.o build/kmain.o build/blink.o build/bwio.o build/gcd.o build/doubles.o build/kernel.o build/scheduler.o build/task.o build/framebuffer_info.o  -lgcc
+	arm-none-eabi-objdump -dtS build/output.elf > kernel.out
 		 
 	arm-none-eabi-objcopy build/output.elf -O binary kernel.img
 
@@ -25,7 +25,7 @@ asm/fib.s : source/fib.c
 asm/gcd.s : source/gcd.c
 	${XCC} ${CFLAGS} -o $@ source/gcd.c
 
-asm/Heap.s : source/Heap.c
+asm/Heap.s : source/Heap.c include/Heap.h
 	${XCC} ${CFLAGS} -o $@ source/Heap.c
 
 asm/doubles.s : source/doubles.c
@@ -79,6 +79,9 @@ build/scheduler.o : asm/scheduler.s
 
 build/task.o : asm/task.s
 	${AS} -o $@ asm/task.s
+
+build/framebuffer_info.o : source/framebuffer_info.s
+	${AS} -o $@ source/framebuffer_info.s
 
 
 clean : 

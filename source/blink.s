@@ -1,5 +1,5 @@
 #include <main.h>
-.section .init
+.section .text
 .globl blink
 blink:
 ldr r1 ,= 0x20200000

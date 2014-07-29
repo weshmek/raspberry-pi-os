@@ -52,6 +52,9 @@ static int get_next_request(struct task** active)
 
 static int initialize(struct kernel_stack* stack)
 {
+	unsigned int* swi_interrupt_address = (unsigned int*) SWI_ADDRESS;
+	unsigned int* swi_instruction = 	(unsigned int*) SWI_INSTRUCTION;
+
 
 	initialize_priority_queues(stack->priority_queues, stack->schedule, &stack->priority_queue_free_list);
 	initialize_task_structs(stack->tasks, &stack->task_free_list);
