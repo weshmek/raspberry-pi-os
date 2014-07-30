@@ -6,6 +6,7 @@
 int kmain()
 {
 	activate_gpio();
+	kernel();
 	int k;	
 	for(;;)
 	{

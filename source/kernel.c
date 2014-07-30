@@ -1,6 +1,9 @@
 #include <task.h>
 #include <scheduler.h>
 #include <raspberrypi.h>
+#include <framebuffer_info.h>
+#include <defaults.h>
+#include <bwio.h>
 struct kernel_stack
 {
 	int request;
@@ -14,6 +17,9 @@ struct kernel_stack
 	struct priority_queue *priority_queue_free_list;
 	struct priority_queue *schedule[NUM_PRIORITIES];
 
+	struct framebuffer_info fb;
+
+	int i;
 	
 
 };
@@ -31,11 +37,21 @@ int kernel(void)
 
 	
 	initialize(&stack);
+
+	toggle_led(ON);
+
+	
 	
 	do
 	{
-		stack.request = get_next_request(&stack.active);
-		handle(&stack);
+		
+		
+		for (stack.i = 0; stack.i < stack.fb.gpu_size; stack.i++)
+		{
+			((unsigned int *)stack.fb.gpu_pointer)[stack.i] = 0xf800f800;
+		}
+			
+		
 	}while(1);
 	
 	return 0;
@@ -52,12 +68,37 @@ static int get_next_request(struct task** active)
 
 static int initialize(struct kernel_stack* stack)
 {
+	int x;
 	unsigned int* swi_interrupt_address = (unsigned int*) SWI_ADDRESS;
 	unsigned int* swi_instruction = 	(unsigned int*) SWI_INSTRUCTION;
 
+	
 
 	initialize_priority_queues(stack->priority_queues, stack->schedule, &stack->priority_queue_free_list);
 	initialize_task_structs(stack->tasks, &stack->task_free_list);
+
+	stack->fb.physical_width = DEFAULT_SCREEN_PHYSICAL_WIDTH;
+	stack->fb.physical_height = DEFAULT_SCREEN_PHYSICAL_HEIGHT;
+	stack->fb.virtual_width	= DEFAULT_SCREEN_VIRTUAL_WIDTH;
+	stack->fb.virtual_height	= DEFAULT_SCREEN_VIRTUAL_HEIGHT;
+	stack->fb.bit_depth	= DEFAULT_SCREEN_BIT_DEPTH;
+	stack->fb.x		= DEFAULT_SCREEN_X;
+	stack->fb.y		= DEFAULT_SCREEN_Y;
+
+	x = (int) bw_get_framebuffer(&stack->fb);
+	if (x == 0)
+	{
+		for(;;)
+		{
+			toggle_led(ON);
+			for (stack->i = 0; stack->i < 100000; stack->i++) ;
+			toggle_led(OFF);
+			for (stack->i = 0; stack->i < 100000; stack->i++);
+		}
+	}
+
+
+
 	return 0;
 }
 

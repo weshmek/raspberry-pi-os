@@ -1,6 +1,7 @@
 #include <raspberrypi.h>
 #include <bwio.h>
 #include <framebuffer_info.h>
+#include <varargs.h>
 
 int activate_gpio(void)
 {
@@ -40,11 +41,11 @@ int toggle_led(int stat)
 }
 			
 
-int bw_mailbox_write(unsigned int box, unsigned int message)
+int bw_mailbox_write(int box, unsigned int message)
 {
 	volatile unsigned int* status_reg = (unsigned int*) MAILBOX_STATUS_ADDR;
-	unsigned int* write_reg = (unsigned int*) MAILBOX_WRITE_ADDR;
-	while(((*status_reg) & 0x80000000) != 0);
+	volatile unsigned int* write_reg = (unsigned int*) MAILBOX_WRITE_ADDR;
+	while(((*status_reg) & 0x80000000)  != 0);
 	*write_reg = (box & 0xF) | (message & 0xFFFFFFF0);
 	return 0;
 }
@@ -53,11 +54,11 @@ int bw_mailbox_write(unsigned int box, unsigned int message)
 unsigned int bw_mailbox_read(int box)
 {
 	volatile unsigned int* status_reg = (unsigned int*) MAILBOX_STATUS_ADDR;
-	unsigned int* read_reg = (unsigned int*) MAILBOX_READ_ADDR;
+	volatile unsigned int* read_reg = (unsigned int*) MAILBOX_READ_ADDR;
 	unsigned int msg;
 	do
 	{
-		while(((*status_reg) & (1 << 30)) != 0);
+		while(((*status_reg) & 0x40000000) != 0);
 		msg = *read_reg;
 	}while((msg & 0xf) != box);
 
@@ -76,12 +77,9 @@ unsigned int* bw_get_framebuffer(struct framebuffer_info* fbi)
 	frame_buffer_info[1] = fbi->physical_height;
 	frame_buffer_info[2] = fbi->virtual_width;
 	frame_buffer_info[3] = fbi->virtual_height;	
-	frame_buffer_info[4] = fbi->gpu_pitch;
 	frame_buffer_info[5] = fbi->bit_depth;
-	frame_buffer_info[6] = fbi->x;
-	frame_buffer_info[7] = fbi->y;
-	frame_buffer_info[8] = fbi->gpu_pointer;
-	frame_buffer_info[9] = fbi->gpu_size;
+	//frame_buffer_info[6] = fbi->x;
+	//frame_buffer_info[7] = fbi->y;
 
 	bw_mailbox_write(1, msg);
 	
@@ -99,3 +97,11 @@ unsigned int* bw_get_framebuffer(struct framebuffer_info* fbi)
 }
 
 
+
+int bwprintf(char* fmt, ...)
+{
+	va_list va;
+	va_start(va, fmt);
+	va_end(va);
+	return 0;
+}
