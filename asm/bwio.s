@@ -187,110 +187,114 @@ bw_get_framebuffer:
 	@ Function supports interworking.
 	@ args = 0, pretend = 0, frame = 16
 	@ frame_needed = 1, uses_anonymous_args = 0
-	stmfd	sp!, {fp, lr}
-	add	fp, sp, #4
-	sub	sp, sp, #16
-	str	r0, [fp, #-16]
-	ldr	r3, .L29
+	stmfd	sp!, {r4, fp, lr}
+	add	fp, sp, #8
+	sub	sp, sp, #20
+	str	r0, [fp, #-24]
+	ldr	r4, .L29
+.LPIC0:
+	add	r4, pc, r4
+	ldr	r3, .L29+4
+	ldr	r3, [r4, r3]
 	ldr	r3, [r3, #0]
 	add	r3, r3, #1073741824
-	str	r3, [fp, #-8]
-	ldr	r3, .L29
+	str	r3, [fp, #-16]
+	ldr	r3, .L29+4
+	ldr	r3, [r4, r3]
 	ldr	r3, [r3, #0]
-	ldr	r2, [fp, #-16]
+	ldr	r2, [fp, #-24]
 	ldr	r2, [r2, #0]
 	str	r2, [r3, #0]
-	ldr	r3, .L29
+	ldr	r3, .L29+4
+	ldr	r3, [r4, r3]
 	ldr	r3, [r3, #0]
 	add	r3, r3, #4
-	ldr	r2, [fp, #-16]
+	ldr	r2, [fp, #-24]
 	ldr	r2, [r2, #4]
 	str	r2, [r3, #0]
-	ldr	r3, .L29
+	ldr	r3, .L29+4
+	ldr	r3, [r4, r3]
 	ldr	r3, [r3, #0]
 	add	r3, r3, #8
-	ldr	r2, [fp, #-16]
+	ldr	r2, [fp, #-24]
 	ldr	r2, [r2, #8]
 	str	r2, [r3, #0]
-	ldr	r3, .L29
+	ldr	r3, .L29+4
+	ldr	r3, [r4, r3]
 	ldr	r3, [r3, #0]
 	add	r3, r3, #12
-	ldr	r2, [fp, #-16]
+	ldr	r2, [fp, #-24]
 	ldr	r2, [r2, #12]
 	str	r2, [r3, #0]
-	ldr	r3, .L29
-	ldr	r3, [r3, #0]
-	add	r3, r3, #16
-	ldr	r2, [fp, #-16]
-	ldr	r2, [r2, #16]
-	str	r2, [r3, #0]
-	ldr	r3, .L29
+	ldr	r3, .L29+4
+	ldr	r3, [r4, r3]
 	ldr	r3, [r3, #0]
 	add	r3, r3, #20
-	ldr	r2, [fp, #-16]
+	ldr	r2, [fp, #-24]
 	ldr	r2, [r2, #20]
 	str	r2, [r3, #0]
-	ldr	r3, .L29
-	ldr	r3, [r3, #0]
-	add	r3, r3, #24
-	ldr	r2, [fp, #-16]
-	ldr	r2, [r2, #24]
-	str	r2, [r3, #0]
-	ldr	r3, .L29
-	ldr	r3, [r3, #0]
-	add	r3, r3, #28
-	ldr	r2, [fp, #-16]
-	ldr	r2, [r2, #28]
-	str	r2, [r3, #0]
-	ldr	r3, .L29
-	ldr	r3, [r3, #0]
-	add	r3, r3, #32
-	ldr	r2, [fp, #-16]
-	ldr	r2, [r2, #32]
-	str	r2, [r3, #0]
-	ldr	r3, .L29
-	ldr	r3, [r3, #0]
-	add	r3, r3, #36
-	ldr	r2, [fp, #-16]
-	ldr	r2, [r2, #36]
-	str	r2, [r3, #0]
 	mov	r0, #1
-	ldr	r1, [fp, #-8]
-	bl	bw_mailbox_write
+	ldr	r1, [fp, #-16]
+	bl	bw_mailbox_write(PLT)
 	mov	r0, #1
-	bl	bw_mailbox_read
-	str	r0, [fp, #-12]
-	ldr	r3, [fp, #-12]
+	bl	bw_mailbox_read(PLT)
+	str	r0, [fp, #-20]
+	ldr	r3, [fp, #-20]
 	cmp	r3, #0
 	beq	.L27
 	mov	r3, #0
 	b	.L28
 .L27:
-	ldr	r3, .L29
+	ldr	r3, .L29+4
+	ldr	r3, [r4, r3]
 	ldr	r3, [r3, #0]
 	ldr	r2, [r3, #16]
-	ldr	r3, [fp, #-16]
+	ldr	r3, [fp, #-24]
 	str	r2, [r3, #16]
-	ldr	r3, .L29
+	ldr	r3, .L29+4
+	ldr	r3, [r4, r3]
 	ldr	r3, [r3, #0]
 	ldr	r2, [r3, #32]
-	ldr	r3, [fp, #-16]
+	ldr	r3, [fp, #-24]
 	str	r2, [r3, #32]
-	ldr	r3, .L29
+	ldr	r3, .L29+4
+	ldr	r3, [r4, r3]
 	ldr	r3, [r3, #0]
 	ldr	r2, [r3, #36]
-	ldr	r3, [fp, #-16]
+	ldr	r3, [fp, #-24]
 	str	r2, [r3, #36]
-	ldr	r3, [fp, #-16]
+	ldr	r3, [fp, #-24]
 	ldr	r3, [r3, #32]
 .L28:
 	mov	r0, r3
-	sub	sp, fp, #4
-	ldmfd	sp!, {fp, lr}
+	sub	sp, fp, #8
+	ldmfd	sp!, {r4, fp, lr}
 	bx	lr
 .L30:
 	.align	2
 .L29:
-	.word	frame_buffer_info
+	.word	_GLOBAL_OFFSET_TABLE_-(.LPIC0+8)
+	.word	frame_buffer_info(GOT)
 	.size	bw_get_framebuffer, .-bw_get_framebuffer
+	.align	2
+	.global	bwprintf
+	.type	bwprintf, %function
+bwprintf:
+	@ Function supports interworking.
+	@ args = 4, pretend = 16, frame = 8
+	@ frame_needed = 1, uses_anonymous_args = 1
+	@ link register save eliminated.
+	stmfd	sp!, {r0, r1, r2, r3}
+	str	fp, [sp, #-4]!
+	add	fp, sp, #0
+	sub	sp, sp, #12
+	add	r3, fp, #8
+	str	r3, [fp, #-8]
+	mov	r3, #0
+	mov	r0, r3
+	add	sp, fp, #0
+	ldmfd	sp!, {fp}
+	add	sp, sp, #16
+	bx	lr
+	.size	bwprintf, .-bwprintf
 	.ident	"GCC: (GNU) 4.7.2"

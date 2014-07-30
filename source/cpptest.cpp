@@ -32,6 +32,12 @@ class Derived : public Base
 };
 
 
+int UseVirtual(Base *b)
+{
+	return b->get();
+}
+
+
 extern "C" int test_base(int i, int j)
 {
 

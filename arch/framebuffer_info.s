@@ -1,14 +1,14 @@
 .section .data
 .align 4
-.global frame_buffer_info
+.globl frame_buffer_info
 frame_buffer_info:
-.int 0xdeadbeef
-.int 0xdeadbeef
-.int 0xdeadbeef
-.int 0xdeadbeef
-.int 0xdeadbeef
-.int 0xdeadbeef
-.int 0xdeadbeef
-.int 0xdeadbeef
-.int 0xdeadbeef
-.int 0xdeadbeef
+.int 1024 
+.int 768
+.int 1024
+.int 768 
+.int 0 
+.int 16
+.int 0 
+.int 0
+.int 0
+.int 0

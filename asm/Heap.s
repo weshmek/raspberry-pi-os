@@ -113,7 +113,7 @@ max_heapify:
 	mov	r1, r2
 	mov	r2, r3
 	mov	r3, r4
-	bl	__aeabi_dcmpgt
+	bl	__aeabi_dcmpgt(PLT)
 	mov	r3, r0
 	cmp	r3, #0
 	beq	.L3
@@ -145,7 +145,7 @@ max_heapify:
 	mov	r1, r2
 	mov	r2, r3
 	mov	r3, r4
-	bl	__aeabi_dcmpgt
+	bl	__aeabi_dcmpgt(PLT)
 	mov	r3, r0
 	cmp	r3, #0
 	beq	.L5
@@ -164,7 +164,7 @@ max_heapify:
 	str	r4, [sp, #12]
 	sub	r3, fp, #68
 	ldmia	r3, {r0, r1, r2, r3}
-	bl	swap
+	bl	swap(PLT)
 	sub	r2, fp, #36
 	ldmia	r2, {r1-r2}
 	sub	r4, fp, #20
@@ -210,7 +210,7 @@ build_max_heap:
 	stmia	sp, {r3-r4}
 	sub	r3, fp, #36
 	ldmia	r3, {r0, r1, r2, r3}
-	bl	max_heapify
+	bl	max_heapify(PLT)
 	sub	r2, fp, #20
 	ldmia	r2, {r1-r2}
 	mvn	r3, #0
@@ -252,7 +252,7 @@ Heapsort:
 	ldr	r1, [fp, #-40]
 	sub	r3, fp, #52
 	ldmia	r3, {r2-r3}
-	bl	build_max_heap
+	bl	build_max_heap(PLT)
 	sub	r4, fp, #28
 	ldmia	r4, {r3-r4}
 	str	r3, [fp, #-20]
@@ -268,7 +268,7 @@ Heapsort:
 	str	r4, [sp, #12]
 	sub	r3, fp, #36
 	ldmia	r3, {r0, r1, r2, r3}
-	bl	swap
+	bl	swap(PLT)
 	sub	r2, fp, #28
 	ldmia	r2, {r1-r2}
 	mvn	r3, #0
@@ -282,7 +282,7 @@ Heapsort:
 	stmia	sp, {r3-r4}
 	sub	r3, fp, #36
 	ldmia	r3, {r0, r1, r2, r3}
-	bl	max_heapify
+	bl	max_heapify(PLT)
 	sub	r2, fp, #20
 	ldmia	r2, {r1-r2}
 	mvn	r3, #0

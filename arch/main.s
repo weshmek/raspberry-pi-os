@@ -4,7 +4,7 @@
 .globl _start
 _start:
 @ldr sp, .L0
-mov sp,#0x80000 @Stack starts here. Where the hell is the best place to put it? 
+mov sp,#0x8000 @Stack starts here. Where the hell is the best place to put it? 
 bl kmain
 
 

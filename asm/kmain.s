@@ -21,10 +21,11 @@ kmain:
 	stmfd	sp!, {fp, lr}
 	add	fp, sp, #4
 	sub	sp, sp, #8
-	bl	activate_gpio
+	bl	activate_gpio(PLT)
+	bl	kernel(PLT)
 .L6:
 	mov	r0, #1
-	bl	toggle_led
+	bl	toggle_led(PLT)
 	mov	r3, #0
 	str	r3, [fp, #-8]
 	b	.L2
@@ -38,7 +39,7 @@ kmain:
 	cmp	r2, r3
 	ble	.L3
 	mov	r0, #0
-	bl	toggle_led
+	bl	toggle_led(PLT)
 	mov	r3, #0
 	str	r3, [fp, #-8]
 	b	.L4

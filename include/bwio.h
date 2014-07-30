@@ -10,7 +10,7 @@ int activate_gpio(void);
 
 int toggle_led(int stat);
 
-int bw_mailbox_write(unsigned int, unsigned int);
+int bw_mailbox_write(int, unsigned int);
 
 unsigned int bw_mailbox_read(int box);
 

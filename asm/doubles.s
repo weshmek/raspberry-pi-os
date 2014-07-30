@@ -30,7 +30,7 @@ add_doubles:
 	ldmia	r1, {r0-r1}
 	sub	r3, fp, #28
 	ldmia	r3, {r2-r3}
-	bl	__aeabi_dadd
+	bl	__aeabi_dadd(PLT)
 	mov	r3, r0
 	mov	r4, r1
 	mov	r0, r3
@@ -58,7 +58,7 @@ divide_doubles:
 	ldmia	r1, {r0-r1}
 	sub	r3, fp, #28
 	ldmia	r3, {r2-r3}
-	bl	__aeabi_ddiv
+	bl	__aeabi_ddiv(PLT)
 	mov	r3, r0
 	mov	r4, r1
 	mov	r0, r3
@@ -67,4 +67,60 @@ divide_doubles:
 	ldmfd	sp!, {r4, fp, lr}
 	bx	lr
 	.size	divide_doubles, .-divide_doubles
+	.global	__aeabi_dsub
+	.align	2
+	.global	subtract_doubles
+	.type	subtract_doubles, %function
+subtract_doubles:
+	@ Function supports interworking.
+	@ args = 0, pretend = 0, frame = 16
+	@ frame_needed = 1, uses_anonymous_args = 0
+	stmfd	sp!, {r4, fp, lr}
+	add	fp, sp, #8
+	sub	sp, sp, #20
+	str	r0, [fp, #-20]
+	str	r1, [fp, #-16]
+	str	r2, [fp, #-28]
+	str	r3, [fp, #-24]
+	sub	r1, fp, #20
+	ldmia	r1, {r0-r1}
+	sub	r3, fp, #28
+	ldmia	r3, {r2-r3}
+	bl	__aeabi_dsub(PLT)
+	mov	r3, r0
+	mov	r4, r1
+	mov	r0, r3
+	mov	r1, r4
+	sub	sp, fp, #8
+	ldmfd	sp!, {r4, fp, lr}
+	bx	lr
+	.size	subtract_doubles, .-subtract_doubles
+	.global	__aeabi_dmul
+	.align	2
+	.global	multiply_doubles
+	.type	multiply_doubles, %function
+multiply_doubles:
+	@ Function supports interworking.
+	@ args = 0, pretend = 0, frame = 16
+	@ frame_needed = 1, uses_anonymous_args = 0
+	stmfd	sp!, {r4, fp, lr}
+	add	fp, sp, #8
+	sub	sp, sp, #20
+	str	r0, [fp, #-20]
+	str	r1, [fp, #-16]
+	str	r2, [fp, #-28]
+	str	r3, [fp, #-24]
+	sub	r1, fp, #20
+	ldmia	r1, {r0-r1}
+	sub	r3, fp, #28
+	ldmia	r3, {r2-r3}
+	bl	__aeabi_dmul(PLT)
+	mov	r3, r0
+	mov	r4, r1
+	mov	r0, r3
+	mov	r1, r4
+	sub	sp, fp, #8
+	ldmfd	sp!, {r4, fp, lr}
+	bx	lr
+	.size	multiply_doubles, .-multiply_doubles
 	.ident	"GCC: (GNU) 4.7.2"

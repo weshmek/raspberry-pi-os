@@ -37,12 +37,12 @@ fibonacci:
 	ldr	r3, [fp, #-16]
 	sub	r3, r3, #1
 	mov	r0, r3
-	bl	fibonacci
+	bl	fibonacci(PLT)
 	mov	r4, r0
 	ldr	r3, [fp, #-16]
 	sub	r3, r3, #2
 	mov	r0, r3
-	bl	fibonacci
+	bl	fibonacci(PLT)
 	mov	r3, r0
 	add	r3, r4, r3
 .L3:

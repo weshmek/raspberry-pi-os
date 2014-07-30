@@ -30,7 +30,7 @@ gcd:
 	bge	.L2
 	ldr	r0, [fp, #-12]
 	ldr	r1, [fp, #-8]
-	bl	gcd
+	bl	gcd(PLT)
 	mov	r3, r0
 	b	.L3
 .L2:
@@ -43,11 +43,11 @@ gcd:
 	ldr	r3, [fp, #-8]
 	mov	r0, r3
 	ldr	r1, [fp, #-12]
-	bl	__aeabi_idivmod
+	bl	__aeabi_idivmod(PLT)
 	mov	r3, r1
 	ldr	r0, [fp, #-12]
 	mov	r1, r3
-	bl	gcd
+	bl	gcd(PLT)
 	mov	r3, r0
 .L3:
 	mov	r0, r3
