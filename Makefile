@@ -2,7 +2,7 @@ XCC = arm-none-eabi-gcc
 XPP = arm-none-eabi-g++
 AS	= arm-none-eabi-as
 
-CFLAGS = -S -c -I include -pie -O0  -Werror
+CFLAGS = -S -c -I include -fPIC -O0  -Werror
 LDFLAGS = -Llib -L/cygdrive/c/yagarto/lib/gcc/arm-none-eabi/4.7.2/  -d
 all : kernel.img 
 
@@ -12,8 +12,8 @@ kernel.img : build/fib.o build/main.o build/kmain.o build/blink.o build/Heap.o b
 		 
 	arm-none-eabi-objcopy build/output.elf -O binary kernel.img
 
-build/main.o : source/main.s
-	${AS} -I include source/main.s -c -o build/main.o
+build/main.o : arch/main.s
+	${AS} -I include arch/main.s -c -o build/main.o
 
 
 asm/kmain.s : source/kmain.c
@@ -49,8 +49,8 @@ asm/task.s : source/task.c
 build/kmain.o : asm/kmain.s
 	${AS} asm/kmain.s -o $@
 
-build/blink.o : source/blink.s
-	${AS} -I include source/blink.s -c -o build/blink.o
+build/blink.o : arch/blink.s
+	${AS} -I include arch/blink.s -c -o build/blink.o
 
 build/fib.o : asm/fib.s
 	${AS} -o $@ asm/fib.s
@@ -80,13 +80,16 @@ build/scheduler.o : asm/scheduler.s
 build/task.o : asm/task.s
 	${AS} -o $@ asm/task.s
 
-build/framebuffer_info.o : source/framebuffer_info.s
-	${AS} -o $@ source/framebuffer_info.s
+build/framebuffer_info.o : arch/framebuffer_info.s
+	${AS} -o $@ arch/framebuffer_info.s
 
 
 clean : 
-	rm build/*
 	rm asm/*.s
+	rm build/*
+
+depend: 
+	${XCC} -I include -M source/*.s > deps
 
 rebuild : clean all
 
@@ -94,3 +97,5 @@ reinstall : clean install
 
 install : all
 	cp kernel.img /cygdrive/j/recovery.img
+
+-include deps

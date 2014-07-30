@@ -5,6 +5,7 @@
 *	A linker script for generation of raspberry pi kernel images.
 ******************************************************************************/
 
+
 SECTIONS {
 	/*
 	* First and formost we need the .init section, containing the code to 
@@ -28,6 +29,8 @@ SECTIONS {
 	*/
 	.text : {
 		*(.text)
+		*(.got)
+		*(.got.plt)
 		
 	}
 
