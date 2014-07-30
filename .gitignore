@@ -1,0 +1,5 @@
+asm/*.s
+build/*
+kernel.*
+Makefile.*
+a.out
