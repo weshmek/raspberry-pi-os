@@ -13,7 +13,7 @@ int initialize_priority_queues(struct priority_queue * queues, struct priority_q
 	queues[NUM_PRIORITY_QUEUES - 1].next_free = 0;
 	*free_list = queues + 0;
 	return 0;
-}	
+}
 
 
 
@@ -86,13 +86,5 @@ struct task* schedule(struct task* tsk, struct priority_queue** queues, struct p
 	ret = get_first_task(queues, free_list);
 	
 	return ret;
-}	
+}
 
-	
-
-
-		
-		
-		
-		
-			
