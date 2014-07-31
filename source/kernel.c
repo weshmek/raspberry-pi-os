@@ -10,6 +10,11 @@ int activate(struct task*);
 void kenter(void);
 void hard_kenter(void);
 
+/*
+ * In CS452 we passed basically the entire kernel stack to initialize and handle in the
+ * parameter list. I'll bet this made the program a little slower, and meant I had to
+ * change the parameter lists, and the declarations for all the functions.
+ */
 struct kernel_stack
 {
 	int request;
