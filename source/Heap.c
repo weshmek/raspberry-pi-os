@@ -3,18 +3,15 @@
 #define HEAP_RIGHT(i) (2 * i + 1)
 #define HEAP_PARENT(i) (i >> 1)	
 
-
 typedef struct {heap_elem *A; heap_len length;} Heap;
 
-
-static inline void swap(Heap H, heap_len i, heap_len j)
+static void swap(Heap H, heap_len i, heap_len j)
 {
 	heap_elem tmp;
 	tmp = H.A[i];
 	H.A[i] = H.A[j];
 	H.A[j] = tmp;
 }
-
 static void max_heapify(Heap Arr, heap_len i)
 {
 	heap_len j;
@@ -43,8 +40,6 @@ static void max_heapify(Heap Arr, heap_len i)
 		swap(Arr, j, largest);
 	}while(j != largest);
 }
-
-	
 static Heap build_max_heap(heap_elem *Array, heap_len length)
 {
 	Heap ret;
@@ -59,8 +54,6 @@ static Heap build_max_heap(heap_elem *Array, heap_len length)
 	}
 	return ret;
 }
-
-
 void Heapsort(heap_elem *A, heap_len length)
 {
 	heap_len i, tmp;
