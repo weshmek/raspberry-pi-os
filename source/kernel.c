@@ -4,6 +4,12 @@
 #include <framebuffer_info.h>
 #include <defaults.h>
 #include <bwio.h>
+
+
+int activate(struct task*);
+void kenter(void);
+void hard_kenter(void);
+
 struct kernel_stack
 {
 	int request;
@@ -48,7 +54,7 @@ int kernel(void)
 		
 		for (stack.i = 0; stack.i < stack.fb.gpu_size; stack.i++)
 		{
-			((unsigned int *)stack.fb.gpu_pointer)[stack.i] = 0xf800f800;
+			((unsigned int *)stack.fb.gpu_pointer)[stack.i] = 0x001ff800;
 		}
 			
 		
@@ -71,6 +77,8 @@ static int initialize(struct kernel_stack* stack)
 	int x;
 	unsigned int* swi_interrupt_address = (unsigned int*) SWI_ADDRESS;
 	unsigned int* swi_instruction = 	(unsigned int*) SWI_INSTRUCTION;
+
+	*swi_interrupt_address = (unsigned int) kenter;
 
 	
 
