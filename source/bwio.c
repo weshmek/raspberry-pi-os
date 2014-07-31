@@ -2,6 +2,7 @@
 #include <bwio.h>
 #include <framebuffer_info.h>
 #include <varargs.h>
+#include <global_ascii_font.h>
 
 int activate_gpio(void)
 {
@@ -66,10 +67,7 @@ unsigned int bw_mailbox_read(int box)
 }
 	
 	
-	
-
-	
-unsigned int* bw_get_framebuffer(struct framebuffer_info* fbi)
+int bw_get_framebuffer(struct framebuffer_info* fbi)
 {
 	unsigned int msg = ((unsigned int) frame_buffer_info) + 0x40000000;
 	unsigned int rep;
@@ -78,8 +76,8 @@ unsigned int* bw_get_framebuffer(struct framebuffer_info* fbi)
 	frame_buffer_info[2] = fbi->virtual_width;
 	frame_buffer_info[3] = fbi->virtual_height;	
 	frame_buffer_info[5] = fbi->bit_depth;
-	//frame_buffer_info[6] = fbi->x;
-	//frame_buffer_info[7] = fbi->y;
+	frame_buffer_info[6] = fbi->x;
+	frame_buffer_info[7] = fbi->y;
 
 	bw_mailbox_write(1, msg);
 	
@@ -93,8 +91,26 @@ unsigned int* bw_get_framebuffer(struct framebuffer_info* fbi)
 	fbi->gpu_pointer = frame_buffer_info[8];
 	fbi->gpu_size = frame_buffer_info[9];
 
-	return (unsigned int*) fbi->gpu_pointer;
+	return 1;
 }
+
+
+int put_char_on_screen(unsigned int* frame_buffer, unsigned int gpu_pitch, unsigned int x, unsigned int y, char ch)
+{
+	int i, j, k;
+	char *character_bitmap = global_ascii_table[ch];
+	k = 0;
+	for (i = 0; i < CHARACTER_HEIGHT; i++)
+	{
+		for (j = 0; j < CHARACTER_WIDTH; j++)
+		{
+			frame_buffer[(x + j) + gpu_pitch * (y + j)] = character_bitmap[k];
+			k++;
+		}
+	}
+	return 0;
+}
+			
 
 
 

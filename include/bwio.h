@@ -14,7 +14,9 @@ int bw_mailbox_write(int, unsigned int);
 
 unsigned int bw_mailbox_read(int box);
 
-unsigned int* bw_get_framebuffer(struct framebuffer_info *fbi);
+int bw_get_framebuffer(struct framebuffer_info *fbi);
+
+int bwprintf(char *fmt, ...);
 
 
 #endif
