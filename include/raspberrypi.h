@@ -49,7 +49,7 @@
 	#define	RAW_IRQ_OFFSET	0x410
 	#define	MASK_IRQ_OFFSET	0x414
 	#define	RELOAD_OFFSET	0x418
-	#define	PRE_DRIV_OFFSET	0x41C
+	#define	PRE_DIV_OFFSET	0x41C
 	#define	FREE_RUN_OFFSET	0x420
 
 
