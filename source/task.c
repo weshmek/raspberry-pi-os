@@ -1,13 +1,14 @@
 #include <task.h>
 
 
-int initialize_task_structs(struct task* tasks, struct task** free_list)
+int initialize_task_structs(struct task* tasks, struct task** free_list, unsigned int* stack_spaces)
 {
 	int i;
 	for (i = 0; i < NUM_TASKS; i++)
 	{
 		tasks[i].tid = i;
 		tasks[i].next_free = tasks + i + 1;
+		tasks[i].stack_space = stack_spaces + (i * TASK_STACK_SPACE);
 	}
 	tasks[NUM_TASKS - 1].next_free = 0;
 			

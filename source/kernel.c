@@ -15,6 +15,8 @@ void hard_kenter(void);
  * parameter list. I'll bet this made the program a little slower, and meant I had to
  * change the parameter lists, and the declarations for all the functions.
  */
+
+static unsigned int global_stack_spaces[NUM_TASKS * TASK_STACK_SPACE];
 struct kernel_stack
 {
 	int request;
@@ -27,6 +29,7 @@ struct kernel_stack
 	struct priority_queue priority_queues[NUM_TASKS];
 	struct priority_queue *priority_queue_free_list;
 	struct priority_queue *schedule[NUM_PRIORITIES];
+	unsigned int *stack_spaces;
 
 	struct framebuffer_info fb;
 
@@ -82,13 +85,14 @@ static int initialize(struct kernel_stack* stack)
 	int x;
 	unsigned int* swi_interrupt_address = (unsigned int*) SWI_ADDRESS;
 	unsigned int* swi_instruction = 	(unsigned int*) SWI_INSTRUCTION;
+	stack->stack_spaces = global_stack_spaces;
 
 	*swi_interrupt_address = (unsigned int) kenter;
 
 	
 
 	initialize_priority_queues(stack->priority_queues, stack->schedule, &stack->priority_queue_free_list);
-	initialize_task_structs(stack->tasks, &stack->task_free_list);
+	initialize_task_structs(stack->tasks, &stack->task_free_list, stack->stack_spaces);
 
 	stack->fb.physical_width = DEFAULT_SCREEN_PHYSICAL_WIDTH;
 	stack->fb.physical_height = DEFAULT_SCREEN_PHYSICAL_HEIGHT;

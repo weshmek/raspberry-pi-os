@@ -3,7 +3,8 @@
 .type		activate, %function
 .align		2
 activate:
-
+	str	sp, [r0, r12]!	
+	mov	fp, #7
 	bx	lr
 
 .global		kenter

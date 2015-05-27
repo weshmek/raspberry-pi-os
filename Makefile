@@ -6,8 +6,8 @@ CFLAGS = -S -c -I include -fPIC -O0  -Werror
 LDFLAGS = -Llib -L/cygdrive/c/yagarto/lib/gcc/arm-none-eabi/4.7.2/  -d
 all : kernel.img 
 
-kernel.img : build/fib.o build/main.o build/kmain.o build/blink.o build/Heap.o build/bwio.o  build/gcd.o build/doubles.o build/kernel.o build/scheduler.o build/task.o build/framebuffer_info.o build/context_switch.o build/global_ascii_font.o
-	arm-none-eabi-ld  -nostdlibs -L"C:\yagarto\lib\gcc\arm-none-eabi\4.7.2" -o build/output.elf -init _start -N -T kernel.ld -Map=kernel.map --no-undefined build/fib.o build/main.o build/kmain.o build/blink.o build/bwio.o build/gcd.o build/doubles.o build/kernel.o build/scheduler.o build/task.o build/framebuffer_info.o build/context_switch.o build/global_ascii_font.o  -lgcc
+kernel.img : build/fib.o build/main.o build/kmain.o build/blink.o build/Heap.o build/bwio.o  build/gcd.o build/doubles.o build/kernel.o build/scheduler.o build/task.o build/framebuffer_info.o build/context_switch.o build/global_ascii_font.o asm/task-struct-addrs.s
+	arm-none-eabi-ld  -nostdlibs -L"C:\Program Files\yagarto\yagarto-20121222\lib\gcc\arm-none-eabi\4.7.2" -o build/output.elf -init _start -N -T kernel.ld -Map=kernel.map --no-undefined build/fib.o build/main.o build/kmain.o build/blink.o build/bwio.o build/gcd.o build/doubles.o build/kernel.o build/scheduler.o build/task.o build/framebuffer_info.o build/context_switch.o build/global_ascii_font.o  -lgcc
 	arm-none-eabi-objdump -dtS build/output.elf > kernel.out
 		 
 	arm-none-eabi-objcopy build/output.elf -O binary kernel.img
@@ -48,6 +48,9 @@ asm/task.s : source/task.c
 
 asm/global_ascii_font.s : source/global_ascii_font.c include/global_ascii_font.h
 	${XCC} ${CFLAGS} -o $@ source/global_ascii_font.c
+
+asm/task-struct-addrs.s : source/task-struct-addrs.c source/task.c
+	${XCC} ${CFLAGS} -o $@ source/task-struct-addrs.c
 	
 build/kmain.o : asm/kmain.s
 	${AS} asm/kmain.s -o $@
@@ -105,7 +108,7 @@ rebuild : clean all
 
 reinstall : clean install
 
-install : all
-	cp kernel.img /cygdrive/j/recovery.img
+install : all /cygdrive/g/recovery.img
+	cp kernel.img /cygdrive/g/recovery.img
 
 -include deps
