@@ -16,7 +16,26 @@ void hard_kenter(void);
  * change the parameter lists, and the declarations for all the functions.
  */
 
-static unsigned int global_stack_spaces[NUM_TASKS * TASK_STACK_SPACE];
+#ifdef __PUT_GLOBALS_ON_STACK__
+struct global_arrays
+{
+#endif
+#ifndef __PUT_GLOBALS_ON_STACK__
+static 
+#endif
+unsigned int global_stack_spaces[NUM_TASKS * TASK_STACK_SPACE];
+
+#ifndef __PUT_GLOBALS_ON_STACK__
+static 
+#endif
+struct priority_queue *global_schedule[NUM_PRIORITIES];
+#ifndef __PUT_GLOBALS_ON_STACK__
+static 
+#endif
+struct priority_queue global_priority_queues[NUM_TASKS];
+#ifdef __PUT_GLOBALS_ON_STACK__
+};
+#endif
 struct kernel_stack
 {
 	int request;
@@ -26,9 +45,9 @@ struct kernel_stack
 	struct task tasks[NUM_TASKS];
 	struct task *task_free_list;
 
-	struct priority_queue priority_queues[NUM_TASKS];
+	struct priority_queue *priority_queues;
 	struct priority_queue *priority_queue_free_list;
-	struct priority_queue *schedule[NUM_PRIORITIES];
+	struct priority_queue **schedule;
 	unsigned int *stack_spaces;
 
 	struct framebuffer_info fb;
@@ -42,12 +61,15 @@ static int initialize(struct kernel_stack* stack);
 
 static int handle(struct kernel_stack *stack);
 
-static int get_next_request(struct task **active);
+static int get_next_request(struct task *active);
 
 
 int kernel(void)
 {
 	struct kernel_stack stack;
+#ifdef __PUT_GLOBALS_ON_STACK__
+	struct global_arrays globals;
+#endif
 
 	
 	initialize(&stack);
@@ -59,21 +81,31 @@ int kernel(void)
 	do
 	{
 		
-		
-		for (stack.i = 0; stack.i < stack.fb.gpu_size; stack.i++)
+/*		
+		for (stack.i = 0; stack.i < stack.fb.gpu_size; stack.i++ )
 		{
 			((unsigned int *)stack.fb.gpu_pointer)[stack.i] = 0x001ff800;
 		}
+		stack.active = schedule(stack.active, stack.schedule, &stack.priority_queue_free_list);
+		stack.request = get_next_request(stack.active);	
+		
+*/		
+		((unsigned int *) stack.fb.gpu_pointer)[1] = 0x01010101;		
 			
+		for (stack.i = 0; stack.i < stack.fb.gpu_size; stack.i+=8)
+		{
+			put_char_on_screen((unsigned int*) stack.fb.gpu_pointer, stack.fb.virtual_width, stack.i, 16* stack.i, 0);
+			
+		}
 		
 	}while(1);
 	
 	return 0;
 }
 
-static int get_next_request(struct task** active)
+static int get_next_request(struct task* active)
 {
-	(void) active;
+	activate(active);
 	return 0;
 }
 
@@ -86,6 +118,8 @@ static int initialize(struct kernel_stack* stack)
 	unsigned int* swi_interrupt_address = (unsigned int*) SWI_ADDRESS;
 	unsigned int* swi_instruction = 	(unsigned int*) SWI_INSTRUCTION;
 	stack->stack_spaces = global_stack_spaces;
+	stack->priority_queues = global_priority_queues;
+	stack->schedule = global_schedule;
 
 	*swi_interrupt_address = (unsigned int) kenter;
 

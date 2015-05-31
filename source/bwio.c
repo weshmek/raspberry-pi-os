@@ -4,6 +4,8 @@
 #include <varargs.h>
 #include <global_ascii_font.h>
 
+static int set_pixel(struct framebuffer_info *fb, unsigned int x, unsigned int y, char colour);
+
 int activate_gpio(void)
 {
 	unsigned int* const gpio_addr = (unsigned int*) (GPIO_CONTROLLER_ADDR + 4);
@@ -14,8 +16,8 @@ int activate_gpio(void)
 	
 int toggle_led(int stat)
 {
-	unsigned int* const led_on_addr = (unsigned int*) (GPIO_CONTROLLER_ADDR + 40);
-	unsigned int* const led_off_addr = (unsigned int*) (GPIO_CONTROLLER_ADDR + 28);
+	volatile unsigned int* const led_on_addr = (unsigned int*) (GPIO_CONTROLLER_ADDR + 40);
+	volatile unsigned int* const led_off_addr = (unsigned int*) (GPIO_CONTROLLER_ADDR + 28);
 	
 	int ret;
 	switch(stat)
@@ -95,16 +97,16 @@ int bw_get_framebuffer(struct framebuffer_info* fbi)
 }
 
 
-int put_char_on_screen(unsigned int* frame_buffer, unsigned int gpu_pitch, unsigned int x, unsigned int y, char ch)
+int put_char_on_screen(unsigned int* frame_buffer, unsigned int virtual_width, unsigned int x, unsigned int y, unsigned int ch)
 {
 	int i, j, k;
-	char *character_bitmap = global_ascii_table[ch];
+	unsigned int *character_bitmap = global_ascii_table[ch];
 	k = 0;
 	for (i = 0; i < CHARACTER_HEIGHT; i++)
 	{
 		for (j = 0; j < CHARACTER_WIDTH; j++)
 		{
-			frame_buffer[(x + j) + gpu_pitch * (y + j)] = character_bitmap[k];
+			frame_buffer[(x + j) + (virtual_width * (y + j))] = character_bitmap[k];
 			k++;
 		}
 	}
@@ -171,5 +173,13 @@ fail:
 
 int vbwprintf (char* fmt, va_list va)
 {
+	return 0;
+}
+
+
+static int set_pixel(struct framebuffer_info* fbi, unsigned int x, unsigned int y, char colour)
+{
+	((unsigned int*)fbi->gpu_pointer)[x + (y*fbi->virtual_height)] = colour;
+
 	return 0;
 }

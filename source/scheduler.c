@@ -44,6 +44,7 @@ static struct task* get_first_task(struct priority_queue** queues, struct priori
 		
 		tmp->next_free = *free_list;
 		*free_list = tmp;
+		break;
 
 
 	}
