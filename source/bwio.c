@@ -8,7 +8,7 @@ static int set_pixel(struct framebuffer_info *fb, unsigned int x, unsigned int y
 
 int activate_gpio(void)
 {
-	unsigned int* const gpio_addr = (unsigned int*) (GPIO_CONTROLLER_ADDR + 4);
+	volatile unsigned int* const gpio_addr = (unsigned int*) (GPIO_CONTROLLER_ADDR + 4);
 	*gpio_addr |= 1 << 18;
 	return 0;
 }
@@ -112,6 +112,23 @@ int put_char_on_screen(unsigned int* frame_buffer, unsigned int virtual_width, u
 	}
 	return 0;
 }
+
+int put_char_on_screen_2(struct framebuffer_info * fbi, char ch, int x, int y)
+{
+	int i, j, k;
+	unsigned int *character_bitmap = global_ascii_table[ch];
+	k = 0;
+	for (i = 0; i < CHARACTER_HEIGHT; i++)
+	{
+		for (j = 0; j < CHARACTER_WIDTH; j++)
+		{
+			((unsigned int *) fbi->gpu_pointer)[(x + j) + (fbi->virtual_width * (y + j))] = character_bitmap[k];
+			k++;
+		}
+	}
+	return 0;
+}
+
 
 int bwprintnum(int num)
 {

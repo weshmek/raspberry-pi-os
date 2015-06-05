@@ -90,7 +90,9 @@ int kernel(void)
 		stack.request = get_next_request(stack.active);	
 		
 */		
-		((unsigned int *) stack.fb.gpu_pointer)[1] = 0x01010101;		
+		((unsigned int *) stack.fb.gpu_pointer)[0] = 0x01010101;		
+		((unsigned int *) stack.fb.gpu_pointer)[1] = 0x01010101;
+		
 			
 		for (stack.i = 0; stack.i < stack.fb.gpu_size; stack.i+=8)
 		{
