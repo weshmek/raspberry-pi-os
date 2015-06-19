@@ -58,12 +58,14 @@ unsigned int bw_mailbox_read(int box)
 {
 	volatile unsigned int* const status_reg = (unsigned int*) MAILBOX_STATUS_ADDR;
 	volatile unsigned int* const read_reg = (unsigned int*) MAILBOX_READ_ADDR;
+	volatile unsigned int* const poll_reg = (unsigned int*) MAILBOX_POLL_ADDR;
 	unsigned int msg;
 	do
 	{
 		while(((*status_reg) & 0x40000000) != 0);
-		msg = *read_reg;
+		msg = *poll_reg;
 	}while((msg & 0xf) != box);
+	msg = *read_reg;
 
 	return msg & 0xFFFFFFF0;
 }
