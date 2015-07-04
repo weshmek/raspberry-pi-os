@@ -69,17 +69,20 @@ int kernel(void)
 	{
 		
 /*		
-		for (stack.i = 0; stack.i < stack.fb.gpu_size; stack.i++ )
-		{
-			((unsigned int *)stack.fb.gpu_pointer)[stack.i] = 0x001ff800;
-		}
-		stack.active = schedule(stack.active, stack.schedule, &stack.priority_queue_free_list);
-		stack.request = get_next_request(stack.active);	
-		
-		((unsigned int *) stack.fb.gpu_pointer)[0] = 0x01010101;		
-		((unsigned int *) stack.fb.gpu_pointer)[1] = 0x01010101;
-		
-*/			
+ *		for (stack.i = 0; stack.i < stack.fb.gpu_size; stack.i++ )
+ *		{
+ *			((unsigned int *)stack.fb.gpu_pointer)[stack.i] = 0x001ff800;
+ *		}
+ *		stack.active = schedule(stack.active, stack.schedule, &stack.priority_queue_free_list);
+ *		stack.request = get_next_request(stack.active);	
+ *		
+ *		((unsigned int *) stack.fb.gpu_pointer)[0] = 0x01010101;		
+ *		((unsigned int *) stack.fb.gpu_pointer)[1] = 0x01010101;
+ *		
+ */			
+/*
+ * DRAW A VERTICAL LINE DOWN THE LEFT SIDE OF THE SCREEN
+ */
 		for (stack.i = 0; stack.i < stack.fb.virtual_height; stack.i++)
 		{
 			((unsigned int*) stack.fb.gpu_pointer)[stack.fb.virtual_width * stack.i] = 0x10000000;	
