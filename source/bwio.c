@@ -4,7 +4,7 @@
 #include <varargs.h>
 #include <global_ascii_font.h>
 
-static int set_pixel(struct framebuffer_info *fb, unsigned int x, unsigned int y, char colour);
+//static int set_pixel(struct framebuffer_info *fb, unsigned int x, unsigned int y, char colour);
 
 int activate_gpio(void)
 {
@@ -118,7 +118,7 @@ int put_char_on_screen(unsigned int* frame_buffer, unsigned int virtual_width, u
 int put_char_on_screen_2(struct framebuffer_info * fbi, char ch, int x, int y)
 {
 	int i, j, k;
-	unsigned int *character_bitmap = global_ascii_table[ch];
+	unsigned int *character_bitmap = (unsigned int *)global_ascii_table[(int)ch];
 	k = 0;
 	for (i = 0; i < CHARACTER_HEIGHT; i++)
 	{
@@ -164,6 +164,7 @@ int bwprintf(char* fmt, ...)
 				{
 					char ch;
 					ch = va_arg(va, char);
+					(void) ch; //Avoid errors
 					//put_char_on_screen(ch);
 					break;
 				}
@@ -195,10 +196,10 @@ int vbwprintf (char* fmt, va_list va)
 	return 0;
 }
 
-
+/**
 static int set_pixel(struct framebuffer_info* fbi, unsigned int x, unsigned int y, char colour)
 {
 	((unsigned int*)fbi->gpu_pointer)[x + (y*fbi->virtual_height)] = colour;
 
 	return 0;
-}
+}*/

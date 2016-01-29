@@ -13,7 +13,7 @@ struct task
 	void* program_counter;
 	unsigned int stack_pointer;
 	unsigned int task_psr;
-	unsigned int *stack_space;
+	unsigned int stack_space[TASK_STACK_SPACE];
 	struct task *next_free;
 		
 };

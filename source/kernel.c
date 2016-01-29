@@ -5,6 +5,7 @@
 #include <defaults.h>
 #include <bwio.h>
 #include <font.h>
+#include <langton.h>
 
 
 int activate(struct task*);
@@ -59,7 +60,16 @@ int kernel(void)
 	struct kernel_stack stack;
 
 	
+	struct task *langton_task;
 	initialize(&stack);
+	
+	langton_task = get_new_task_struct((struct task**)&stack.tasks);
+	langton_task->priority = 1;
+	langton_task->program_counter = (void*) langton;
+	langton_task->stack_pointer = (unsigned int)langton_task->stack_space;
+
+	schedule(langton_task, &stack.priority_queues, &stack.priority_queue_free_list);
+
 
 	toggle_led(ON);
 
@@ -94,6 +104,8 @@ int kernel(void)
 		((unsigned int*) stack.fb.gpu_pointer)[1024 + 0] = 0x01010101;
 		((unsigned int*) stack.fb.gpu_pointer)[1024 + 1] = 0x01010101;
 		((unsigned int*) stack.fb.gpu_pointer)[1024 + 1024 + 2] = ((unsigned int*) stack.fb.gpu_pointer)[1024 + 1024 + 3] = 0x01010101;
+		handle(0);
+		get_next_request(stack.active);
 		
 		
 	}while(1);
@@ -115,6 +127,7 @@ static int initialize(struct kernel_stack* stack)
 	int x;
 	unsigned int* swi_interrupt_address = (unsigned int*) SWI_ADDRESS;
 	unsigned int* swi_instruction = 	(unsigned int*) SWI_INSTRUCTION;
+	(void) swi_instruction;
 	stack->stack_spaces = stack->garrays.global_stack_spaces;
 
 	stack->priority_queues = stack->garrays.global_priority_queues;
@@ -134,7 +147,6 @@ static int initialize(struct kernel_stack* stack)
 	stack->fb.bit_depth	= DEFAULT_SCREEN_BIT_DEPTH;
 	stack->fb.x		= DEFAULT_SCREEN_X;
 	stack->fb.y		= DEFAULT_SCREEN_Y;
-
 	x = (int) bw_get_framebuffer(&stack->fb);
 	if (x == 0)
 	{

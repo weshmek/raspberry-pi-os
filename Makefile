@@ -1,17 +1,22 @@
-XCC = arm-none-eabi-gcc
-XPP = arm-none-eabi-g++
-AS	= arm-none-eabi-as
+DEV_PREFIX=arm-unknown-linux-gnueabi-
+XCC = ${DEV_PREFIX}gcc
+XPP = ${DEV_PREFIX}g++
+AS	= ${DEV_PREFIX}as
 ASFLAGS	= --fatal-warnings
+LD = ${DEV_PREFIX}ld
+OBJDUMP = ${DEV_PREFIX}objdump
+OBJCOPY = ${DEV_PREFIX}objcopy
 
-CFLAGS = -S -c -I include -fPIC -O0  -Werror
-LDFLAGS = -Llib -L/cygdrive/c/yagarto/lib/gcc/arm-none-eabi/4.7.2/  -d
+CFLAGS = -S -c -I include -fPIC -O0  -Werror -fno-stack-protector -Wall
+LDFLAGS = -d -L lib 
 all : kernel.img 
 
-kernel.img : build/fib.o build/main.o build/kmain.o build/blink.o build/Heap.o build/bwio.o  build/gcd.o build/doubles.o build/kernel.o build/scheduler.o build/task.o build/framebuffer_info.o build/context_switch.o build/global_ascii_font.o asm/task-struct-addrs.s build/font.o build/dma_control_block.o
-	arm-none-eabi-ld  -nostdlibs -L"C:\Program Files\yagarto\yagarto-20121222\lib\gcc\arm-none-eabi\4.7.2" -o build/output.elf -init _start -N -T kernel.ld -Map=kernel.map --no-undefined build/fib.o build/main.o build/kmain.o build/blink.o build/bwio.o build/gcd.o build/doubles.o build/kernel.o build/scheduler.o build/task.o build/framebuffer_info.o build/context_switch.o build/global_ascii_font.o build/Heap.o build/font.o build/dma_control_block.o -lgcc
-	arm-none-eabi-objdump -dtS build/output.elf > kernel.out
+kernel.img : build/fib.o build/main.o build/kmain.o build/blink.o build/Heap.o build/bwio.o  build/gcd.o build/doubles.o build/kernel.o build/scheduler.o build/task.o build/framebuffer_info.o build/context_switch.o build/global_ascii_font.o build/font.o build/dma_control_block.o build/raise.o build/langton.o
+	${LD} -nostdlibs -o build/output.elf -init _start -N -T kernel.ld -Map=kernel.map --no-undefined $^ lib/libgcc.a
+	#build/fib.o build/main.o build/kmain.o build/blink.o build/bwio.o build/gcd.o build/doubles.o build/kernel.o build/scheduler.o build/task.o build/framebuffer_info.o build/context_switch.o build/global_ascii_font.o build/Heap.o build/font.o build/dma_control_block.o lib/libgcc.a build/langton.o
+	${OBJDUMP} -dtS build/output.elf > kernel.out
 		 
-	arm-none-eabi-objcopy build/output.elf -O binary kernel.img
+	${OBJCOPY} build/output.elf -O binary kernel.img
 
 build/font.o : arch/font.s
 	${AS} ${ASFLAGS} -I include arch/font.s -c -o build/font.o
@@ -53,8 +58,14 @@ asm/task.s : source/task.c
 asm/global_ascii_font.s : source/global_ascii_font.c include/global_ascii_font.h
 	${XCC} ${CFLAGS} -o $@ source/global_ascii_font.c
 
-asm/task-struct-addrs.s : source/task-struct-addrs.c source/task.c
-	${XCC} ${CFLAGS} -o $@ source/task-struct-addrs.c
+#asm/task-struct-addrs.s : source/task-struct-addrs.c source/task.c
+#	${XCC} ${CFLAGS} -o $@ source/task-struct-addrs.c
+
+asm/langton.s : task/langton.c
+	${XCC} ${CFLAGS} -o $@ $^
+
+build/langton.o : asm/langton.s
+	${AS} ${ASFLAGS} -o $@ $^
 
 build/dma_control_block.o : arch/dma_control_block.s
 	${AS} ${ASFLAGS} -o $@ arch/dma_control_block.s
@@ -103,6 +114,9 @@ build/context_switch.o : arch/context_switch.s
 build/global_ascii_font.o : asm/global_ascii_font.s
 	${AS} ${ASFLAGS} -o $@ asm/global_ascii_font.s
 
+build/raise.o : arch/raise.s
+	${AS} ${ASFLAGS} -o $@ $^
+
 
 clean : 
 	rm asm/*.s
@@ -115,7 +129,7 @@ rebuild : clean all
 
 reinstall : clean install
 
-install : all /cygdrive/g/recovery.img
-	cp kernel.img /cygdrive/g/recovery.img
+#install : all /cygdrive/g/recovery.img
+#	cp kernel.img /cygdrive/g/recovery.img
 
 -include deps

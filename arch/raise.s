@@ -1,0 +1,3 @@
+.text
+.global raise
+raise:

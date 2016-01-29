@@ -66,7 +66,8 @@ static int add_task_to_schedule(struct task* tsk, struct priority_queue** queues
 	new->tsk = tsk;
 	add_to = queues[tsk->priority];
 	
-	add_to->last->next = add_to->last = new->last = new;
+	add_to->last->next = new;
+	add_to->last = new->last = new;
 	new->next = 0;
 
 	return 0;

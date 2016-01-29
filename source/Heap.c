@@ -1,6 +1,6 @@
 #include "Heap.h"
 #define HEAP_LEFT(i) (2 * i)
-#define HEAP_RIGHT(i) (2 * i + 1)
+#define HEAP_RIGHT(i) ((2 * i) + 1)
 #define HEAP_PARENT(i) (i >> 1)	
 
 typedef struct {heap_elem *A; heap_len length;} Heap;
@@ -56,7 +56,7 @@ static Heap build_max_heap(heap_elem *Array, heap_len length)
 }
 void Heapsort(heap_elem *A, heap_len length)
 {
-	heap_len i, tmp;
+	heap_len i;
 	Heap ret = build_max_heap(A, length);
 	for (i = ret.length; i >= 2; i--)
 	{
